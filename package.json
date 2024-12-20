@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "bpmnlint": "^9.0.0"
+  }
+}
