@@ -47,7 +47,11 @@ def validate_bpmn():
             if result.returncode == 0:
                 return jsonify({'message': 'No errors found'})
             else:
-                return jsonify({'errors': result.stderr})
+                # Return both stdout and stderr if there are errors
+                return jsonify({
+                    'errors': result.stdout if result.stdout else result.stderr,
+                    'return_code': result.returncode
+                })
                 
         finally:
             if os.path.exists(temp_path):
