@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: bpmnlint-service
+    env: python
+    buildCommand: pip install -r requirements.txt && npm install
+    startCommand: gunicorn app:app
+    plan: free
