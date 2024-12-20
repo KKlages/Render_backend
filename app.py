@@ -6,16 +6,9 @@ import json
 
 app = Flask(__name__)
 
-# Create .bpmnlintrc during startup
+# Simplified bpmnlint config
 BPMNLINT_CONFIG = '''{
-  "extends": "bpmnlint:recommended",
-  "rules": {
-    "label-required": "error",
-    "no-implicit-split": "error",
-    "no-implicit-join": "error",
-    "single-blank-start-event": "error",
-    "single-end-event": "error"
-  }
+  "extends": "bpmnlint:recommended"
 }'''
 
 def ensure_config():
@@ -27,6 +20,8 @@ def ensure_config():
 @app.route('/validate', methods=['POST'])
 def validate_bpmn():
     try:
+        # Ensure bpmnlint is installed
+        subprocess.run(['npm', 'install', 'bpmnlint'], check=True)
         ensure_config()
         
         if 'file' not in request.files:
