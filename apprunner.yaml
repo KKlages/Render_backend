@@ -1,11 +1,18 @@
 version: 1.0
-runtime: python3.11
+runtime: python3
 build:
   commands:
     pre-build:
-      - pip install --upgrade pip
+      - python -m pip install --upgrade pip
       - pip install -r requirements.txt
+      # Install nodejs and npm for bpmnlint
+      - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+      - apt-get install -y nodejs
+      - npm install -g bpmnlint
 run:
-  command: gunicorn -b 0.0.0.0:8000 app:app
+  command: gunicorn --log-level debug -b 0.0.0.0:8000 app:app
   network:
     port: 8000
+  env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
