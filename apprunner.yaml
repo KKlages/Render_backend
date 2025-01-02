@@ -5,9 +5,8 @@ build:
     pre-build:
       - python -m pip install --upgrade pip
       - pip install -r requirements.txt
-      # Install nodejs and npm for bpmnlint
-      - curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-      - apt-get install -y nodejs
+      # Install Node.js using Amazon Linux's package manager
+      - yum install -y nodejs npm
       - npm install -g bpmnlint
 run:
   command: gunicorn --log-level debug -b 0.0.0.0:8000 app:app
