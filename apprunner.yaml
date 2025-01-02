@@ -3,8 +3,8 @@ runtime: python3
 build:
   commands:
     pre-build:
-      # Install Node.js repository
-      - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
+      # Install Node.js 16.x (more compatible with Amazon Linux)
+      - curl -sL https://rpm.nodesource.com/setup_16.x | bash -
       # Install Node.js and npm
       - yum install -y nodejs
       # Verify installations
