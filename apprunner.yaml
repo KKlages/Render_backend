@@ -2,12 +2,19 @@ version: 1.0
 runtime: python3
 build:
   commands:
+    preBuild:
+      # Install Node.js repository
+      - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
+      # Install Node.js and npm
+      - yum install -y nodejs
+      # Verify installations
+      - node --version
+      - npm --version
     build:
       # Install Python dependencies
       - python -m pip install --upgrade pip
       - pip install -r requirements.txt
-      # Install Node.js and npm
-      - yum install -y nodejs npm
+      # Install bpmnlint globally
       - npm install -g bpmnlint
 run:
   command: python -m gunicorn -b 0.0.0.0:8000 app:app
@@ -16,3 +23,5 @@ run:
   env:
     - name: PYTHONUNBUFFERED
       value: "1"
+    - name: PATH
+      value: "/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/lib/node_modules/.bin"
