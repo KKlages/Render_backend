@@ -3,6 +3,11 @@ import subprocess
 import tempfile
 import os
 import json
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -11,23 +16,27 @@ BPMNLINT_CONFIG = '''{
   "extends": "bpmnlint:recommended"
 }'''
 
-def initialize_bpmnlint():
-    """Initialize bpmnlint during application startup"""
-    try:
-        subprocess.run(['npm', 'install', 'bpmnlint'], check=True)
-        ensure_config()
-    except Exception as e:
-        print(f"Failed to initialize bpmnlint: {e}")
-        raise
-
 def ensure_config():
     config_path = '.bpmnlintrc'
     if not os.path.exists(config_path):
         with open(config_path, 'w') as f:
             f.write(BPMNLINT_CONFIG)
+        logger.info(f"Created bpmnlint config at {config_path}")
 
-# Initialize on startup
-initialize_bpmnlint()
+def initialize_bpmnlint():
+    """Initialize bpmnlint during application startup"""
+    try:
+        logger.info("Starting bpmnlint initialization")
+        subprocess.run(['npm', 'install', 'bpmnlint'], check=True)
+        ensure_config()
+        logger.info("bpmnlint initialization completed successfully")
+    except Exception as e:
+        logger.error(f"Failed to initialize bpmnlint: {e}")
+        raise
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy'}), 200
 
 @app.route('/validate', methods=['POST'])
 def validate_bpmn():
@@ -51,9 +60,9 @@ def validate_bpmn():
                 timeout=30  # Add timeout to prevent hanging
             )
             
-            print("bpmnlint stdout:", result.stdout)
-            print("bpmnlint stderr:", result.stderr)
-            print("Return code:", result.returncode)
+            logger.debug(f"bpmnlint stdout: {result.stdout}")
+            logger.debug(f"bpmnlint stderr: {result.stderr}")
+            logger.debug(f"Return code: {result.returncode}")
             
             if result.returncode == 0:
                 return jsonify({'message': 'No errors found'})
@@ -66,18 +75,21 @@ def validate_bpmn():
         finally:
             # Always clean up the temporary file
             try:
-                os.remove(temp_path)
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
             except OSError:
                 pass
                 
     except subprocess.TimeoutExpired:
         return jsonify({'error': 'Validation timed out'}), 408
     except Exception as e:
-        print("Error:", str(e))
+        logger.error(f"Error during validation: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Initialize on startup
+logger.info("Starting application initialization")
+initialize_bpmnlint()
+logger.info("Application initialization complete")
 
 if __name__ == '__main__':
     app.run(debug=True)
