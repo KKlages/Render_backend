@@ -2,8 +2,10 @@ version: 1.0
 runtime: python3.11
 build:
   commands:
-    # Install dependencies
+    # Install pip and dependencies
     pre-build:
+      - python -m ensurepip --upgrade
+      - pip install --upgrade pip
       - pip install -r requirements.txt
 run:
   # Run the Flask application on port 8000
