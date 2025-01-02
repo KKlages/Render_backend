@@ -14,7 +14,7 @@ services:
       timeout: 5
       retries: 3
       successCodes: [200]
-    startCommand: gunicorn app:app --bind 0.0.0.0:8000
+    startCommand: gunicorn app:app
     plan: free
     environmentVariables:
       - name: APP_ENV
