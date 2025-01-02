@@ -1,0 +1,4 @@
+{
+  "errors": "\n\n/tmp/tmp1vujiylw.bpmn\n  Event_0t8dv9o  error  Element is missing label/name  label-required\n  Event_1wd6p5s  error  Element is missing label/name  label-required\n\n\u2716 2 problems (2 errors, 0 warnings)\n",
+  "return_code": 1
+}
