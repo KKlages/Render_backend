@@ -3,9 +3,12 @@ runtime: python3
 build:
   commands:
     build:
+      # Install Python dependencies
       - python -m pip install --upgrade pip
       - pip install -r requirements.txt
-      - pip install gunicorn
+      # Install Node.js and npm
+      - yum install -y nodejs npm
+      - npm install -g bpmnlint
 run:
   command: python -m gunicorn -b 0.0.0.0:8000 app:app
   network:
