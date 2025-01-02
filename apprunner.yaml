@@ -1,0 +1,25 @@
+version: 1.0
+
+services:
+  - name: bpmnlint-service
+    type: web
+    image:
+      source: python
+      buildCommand: |
+        pip install -r requirements.txt
+        npm install
+    healthCheck:
+      path: /health
+      interval: 30
+      timeout: 5
+      retries: 3
+      successCodes: [200]
+    startCommand: gunicorn app:app
+    plan: free
+    environmentVariables:
+      - name: APP_ENV
+        value: production
+    instanceConfiguration:
+      cpu: 1024
+      memory: 2048
+      instanceCount: 1
