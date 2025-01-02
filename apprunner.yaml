@@ -1,11 +1,25 @@
 version: 1.0
-runtime: python3.11
-build:
-  commands:
-    pre-build:
-      - pip install --upgrade pip
-      - pip install -r requirements.txt
-run:
-  command: gunicorn -b 0.0.0.0:8000 app:app
-  network:
-    port: 8000
+
+services:
+  - name: bpmnlint-service
+    type: web
+    image:
+      source: python
+      buildCommand: |
+        pip install -r requirements.txt
+        npm install
+    healthCheck:
+      path: /health
+      interval: 30
+      timeout: 5
+      retries: 3
+      successCodes: [200]
+    startCommand: gunicorn app:app --bind 0.0.0.0:8000
+    plan: free
+    environmentVariables:
+      - name: APP_ENV
+        value: production
+    instanceConfiguration:
+      cpu: 1024
+      memory: 2048
+      instanceCount: 1
