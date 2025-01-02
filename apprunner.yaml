@@ -2,13 +2,13 @@ version: 1.0
 runtime: python3.11
 build:
   commands:
-    # Install pip and dependencies
     pre-build:
-      - python -m ensurepip --upgrade
+      - apt-get update
+      - apt-get install -y nodejs npm
+      - npm install -g bpmnlint
       - pip install --upgrade pip
       - pip install -r requirements.txt
 run:
-  # Run the Flask application on port 8000
   command: gunicorn -b 0.0.0.0:8000 app:app
   network:
     port: 8000
