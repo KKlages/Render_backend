@@ -2,7 +2,7 @@ version: 1.0
 runtime: python3
 build:
   commands:
-    preBuild:
+    pre-build:
       # Install Node.js repository
       - curl -sL https://rpm.nodesource.com/setup_18.x | bash -
       # Install Node.js and npm
