@@ -12,8 +12,11 @@ build:
       # Verify Node.js installation
       - node --version
       - npm --version
-      # Install bpmnlint
-      - npm install -g bpmnlint
+      # Initialize npm and install bpmnlint locally
+      - npm init -y
+      - npm install bpmnlint --save
+      # Create symlink to ensure bpmnlint is in PATH
+      - ln -s /app/node_modules/.bin/bpmnlint /usr/local/bin/bpmnlint
 run:
   command: python -m gunicorn -b 0.0.0.0:8000 app:app
   network:
@@ -22,4 +25,4 @@ run:
     - name: PYTHONUNBUFFERED
       value: "1"
     - name: PATH
-      value: "/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/lib/node_modules/.bin"
+      value: "/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin:/app/node_modules/.bin"
